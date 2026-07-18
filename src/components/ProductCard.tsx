@@ -4,14 +4,16 @@ import React from 'react';
 
 interface ProductCardProps {
   product: Product;
+  index?: number;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
   return (
     <motion.article 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
       className="group flex flex-col"
     >
       <a href={product.affiliateUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-[4/5] sm:aspect-square overflow-hidden bg-zinc-100 block mb-4">

@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read/write for the preview app.
+    // In a real production app, you should restrict writes to authenticated admins.
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

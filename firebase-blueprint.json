@@ -1,0 +1,59 @@
+{
+  "collections": [
+    {
+      "name": "products",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "Unique identifier for the product"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Product title"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Product description"
+        },
+        {
+          "name": "price",
+          "type": "string",
+          "description": "Product price"
+        },
+        {
+          "name": "imageUrl",
+          "type": "string",
+          "description": "Image URL of the product"
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "description": "Product category"
+        },
+        {
+          "name": "affiliateUrl",
+          "type": "string",
+          "description": "Affiliate link for the product"
+        },
+        {
+          "name": "isTrending",
+          "type": "boolean",
+          "description": "Whether the product is trending"
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "fields": [
+        {
+          "name": "categories",
+          "type": "array",
+          "description": "Array of strings for categories"
+        }
+      ]
+    }
+  ]
+}

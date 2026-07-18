@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Product, Category } from '../types';
 import { motion } from 'motion/react';
 import { Plus, Trash2, LogOut, RefreshCw, Pencil } from 'lucide-react';
+import { db } from '../lib/firebase';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 interface AdminPanelProps {
   onLogout: () => void;
   products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   categories: Category[];
-  setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
-export function AdminPanel({ onLogout, products, setProducts, categories, setCategories }: AdminPanelProps) {
+export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) {
   const [newCategory, setNewCategory] = useState('');
   const [urlInput, setUrlInput] = useState('');
   const [isExtracting, setIsExtracting] = useState(false);
@@ -34,16 +34,18 @@ export function AdminPanel({ onLogout, products, setProducts, categories, setCat
     setTimeout(() => setMessage(null), 3000);
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (newCategory.trim() && !categories.includes(newCategory.trim())) {
-      setCategories([...categories, newCategory.trim()]);
+      const newCats = [...categories, newCategory.trim()];
+      await setDoc(doc(db, 'settings', 'categories'), { list: newCats });
       setNewCategory('');
     }
   };
 
-  const handleDeleteCategory = (cat: string) => {
+  const handleDeleteCategory = async (cat: string) => {
     if (cat !== 'Alle') {
-      setCategories(categories.filter(c => c !== cat));
+      const newCats = categories.filter(c => c !== cat);
+      await setDoc(doc(db, 'settings', 'categories'), { list: newCats });
     }
   };
 
@@ -95,7 +97,7 @@ export function AdminPanel({ onLogout, products, setProducts, categories, setCat
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.category || !formData.affiliateUrl) {
       showMessage('error', 'Bitte fülle die Pflichtfelder (Titel, Kategorie, Link) aus.');
@@ -103,13 +105,13 @@ export function AdminPanel({ onLogout, products, setProducts, categories, setCat
     }
 
     if (editingId) {
-      setProducts(products.map(p => 
-        p.id === editingId ? { ...p, ...formData as Product } : p
-      ));
+      const updatedProduct = { ...formData as Product, id: editingId };
+      await setDoc(doc(db, 'products', editingId), updatedProduct);
       showMessage('success', 'Produkt erfolgreich aktualisiert!');
     } else {
+      const newId = `p_${Date.now()}`;
       const newProduct: Product = {
-        id: `p_${Date.now()}`,
+        id: newId,
         title: formData.title,
         description: formData.description || '',
         price: formData.price || 'ab 19,99 €',
@@ -118,7 +120,7 @@ export function AdminPanel({ onLogout, products, setProducts, categories, setCat
         affiliateUrl: formData.affiliateUrl,
         isTrending: formData.isTrending,
       };
-      setProducts([newProduct, ...products]);
+      await setDoc(doc(db, 'products', newId), newProduct);
       showMessage('success', 'Produkt erfolgreich hinzugefügt!');
     }
 
@@ -136,8 +138,8 @@ export function AdminPanel({ onLogout, products, setProducts, categories, setCat
     setUrlInput('');
   };
 
-  const handleDeleteProduct = (id: string) => {
-    setProducts(products.filter(p => p.id !== id));
+  const handleDeleteProduct = async (id: string) => {
+    await deleteDoc(doc(db, 'products', id));
     if (editingId === id) {
       setEditingId(null);
       setFormData({ title: '', description: '', price: '', imageUrl: '', category: categories[1] || '', affiliateUrl: '', isTrending: false });

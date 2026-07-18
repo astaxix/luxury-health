@@ -10,6 +10,8 @@ import { LoginModal } from './components/LoginModal';
 import { AdminPanel } from './components/AdminPanel';
 import { Sidebar } from './components/Sidebar';
 import { SearchModal } from './components/SearchModal';
+import { db } from './lib/firebase';
+import { collection, onSnapshot, doc, setDoc, writeBatch } from 'firebase/firestore';
 
 const INITIAL_CATEGORIES: Category[] = ['Alle', 'Proteinpulver', 'Vitamine', 'Snacks', 'Equipment'];
 
@@ -22,25 +24,42 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // Load from local storage or use initial
-  const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('lumina_products');
-    return saved ? JSON.parse(saved) : initialProducts;
-  });
-
-  const [categories, setCategories] = useState<Category[]>(() => {
-    const saved = localStorage.getItem('lumina_categories');
-    return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
-  });
-
-  // Save to local storage on change
-  useEffect(() => {
-    localStorage.setItem('lumina_products', JSON.stringify(products));
-  }, [products]);
+  // Load from Firestore
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
 
   useEffect(() => {
-    localStorage.setItem('lumina_categories', JSON.stringify(categories));
-  }, [categories]);
+    const unsubProducts = onSnapshot(collection(db, 'products'), (snapshot) => {
+      if (snapshot.empty) {
+        // Seed initial data if empty
+        const seedData = async () => {
+          const batch = writeBatch(db);
+          initialProducts.forEach(product => {
+            const ref = doc(collection(db, 'products'), product.id);
+            batch.set(ref, product);
+          });
+          await batch.commit();
+        };
+        seedData();
+      } else {
+        const productsData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Product));
+        setProducts(productsData);
+      }
+    });
+
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'categories'), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().list) {
+        setCategories(docSnap.data().list);
+      } else {
+        setDoc(doc(db, 'settings', 'categories'), { list: INITIAL_CATEGORIES });
+      }
+    });
+
+    return () => {
+      unsubProducts();
+      unsubSettings();
+    };
+  }, []);
 
   const filteredProducts = products.filter((product) => {
     const matchesCategory = activeCategory === 'Alle' || product.category === activeCategory;
@@ -127,9 +146,7 @@ export default function App() {
           <AdminPanel 
             onLogout={handleLogout}
             products={products}
-            setProducts={setProducts}
             categories={categories}
-            setCategories={setCategories}
           />
         )}
       </main>

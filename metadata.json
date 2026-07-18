@@ -1,0 +1,6 @@
+{
+  "name": "Luxury Health",
+  "description": "Premium health and protein affiliate shop.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

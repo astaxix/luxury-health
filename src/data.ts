@@ -1,0 +1,61 @@
+import { Product } from './types';
+
+export const initialProducts: Product[] = [
+  {
+    id: 'p1',
+    title: 'Premium Whey Protein - Vanilla',
+    description: 'Hochwertiges Whey Protein Isolat mit exzellentem Geschmack und hoher biologischer Wertigkeit.',
+    price: 'ab 29,99 €',
+    imageUrl: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&q=80&w=800',
+    category: 'Proteinpulver',
+    affiliateUrl: 'https://www.amazon.de/s?k=whey+protein+vanille',
+    isTrending: true,
+  },
+  {
+    id: 'p2',
+    title: 'Omega 3 Fischöl Kapseln',
+    description: 'Hochdosiertes Omega 3 für Herz und Gehirn. Laborgeprüft und nachhaltig.',
+    price: 'ab 18,50 €',
+    imageUrl: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&q=80&w=800',
+    category: 'Vitamine',
+    affiliateUrl: 'https://www.amazon.de/s?k=omega+3+kapseln',
+    isTrending: true,
+  },
+  {
+    id: 'p3',
+    title: 'Vegan Protein Bar - Chocolate',
+    description: 'Der perfekte Snack für zwischendurch. Viel Protein, wenig Zucker.',
+    price: 'ab 24,90 €',
+    imageUrl: 'https://images.unsplash.com/photo-1622484211148-52c676d50608?auto=format&fit=crop&q=80&w=800',
+    category: 'Snacks',
+    affiliateUrl: 'https://www.amazon.de/s?k=protein+bar+vegan',
+  },
+  {
+    id: 'p4',
+    title: 'Premium Shaker Bottle 700ml',
+    description: 'BPA-freier Shaker mit Edelstahl-Mixball für klumpenfreie Shakes.',
+    price: 'ab 12,99 €',
+    imageUrl: 'https://images.unsplash.com/photo-1560008581-09826d1de69e?auto=format&fit=crop&q=80&w=800',
+    category: 'Equipment',
+    affiliateUrl: 'https://www.amazon.de/s?k=protein+shaker',
+  },
+  {
+    id: 'p5',
+    title: 'Clear Whey Isolate - Peach Tea',
+    description: 'Erfrischendes Protein-Getränk, leicht wie ein Saft.',
+    price: 'ab 34,99 €',
+    imageUrl: 'https://images.unsplash.com/photo-1622484211148-52c676d50608?auto=format&fit=crop&q=80&w=800',
+    category: 'Proteinpulver',
+    affiliateUrl: 'https://www.amazon.de/s?k=clear+whey',
+  },
+  {
+    id: 'p6',
+    title: 'Vitamin D3 + K2 Tropfen',
+    description: 'Das Sonnenvitamin in optimaler Kombination für beste Bioverfügbarkeit.',
+    price: 'ab 19,90 €',
+    imageUrl: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&q=80&w=800',
+    category: 'Vitamine',
+    affiliateUrl: 'https://www.amazon.de/s?k=vitamin+d3+k2+tropfen',
+    isTrending: true,
+  }
+];

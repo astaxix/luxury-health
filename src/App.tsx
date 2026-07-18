@@ -11,7 +11,7 @@ import { AdminPanel } from './components/AdminPanel';
 import { Sidebar } from './components/Sidebar';
 import { SearchModal } from './components/SearchModal';
 import { db } from './lib/firebase';
-import { collection, onSnapshot, doc, setDoc, writeBatch } from 'firebase/firestore';
+import { collection, onSnapshot, doc, setDoc, writeBatch, getDoc } from 'firebase/firestore';
 
 const INITIAL_CATEGORIES: Category[] = ['Alle', 'Proteinpulver', 'Vitamine', 'Snacks', 'Equipment'];
 
@@ -29,18 +29,21 @@ export default function App() {
   const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
 
   useEffect(() => {
-    const unsubProducts = onSnapshot(collection(db, 'products'), (snapshot) => {
+    const unsubProducts = onSnapshot(collection(db, 'products'), async (snapshot) => {
       if (snapshot.empty) {
-        // Seed initial data if empty
-        const seedData = async () => {
+        // Seed initial data if empty and not seeded before
+        const seedDoc = await getDoc(doc(db, 'settings', 'seeded'));
+        if (!seedDoc.exists()) {
           const batch = writeBatch(db);
           initialProducts.forEach(product => {
             const ref = doc(collection(db, 'products'), product.id);
             batch.set(ref, product);
           });
+          await setDoc(doc(db, 'settings', 'seeded'), { done: true });
           await batch.commit();
-        };
-        seedData();
+        } else {
+          setProducts([]);
+        }
       } else {
         const productsData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Product));
         setProducts(productsData);

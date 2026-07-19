@@ -171,9 +171,9 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 pt-32 pb-12 mt-12">
+    <div className="max-w-6xl mx-auto px-4 pt-32 pb-12 relative z-10">
       {message && (
-        <div className={`fixed top-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium shadow-lg z-50 transition-all ${
+        <div className={`fixed top-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium shadow-lg z-[100] transition-all ${
           message.type === 'error' ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'
         }`}>
           {message.text}

@@ -8,6 +8,14 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
+  const getHighResImageUrl = (url: string) => {
+    if (!url) return url;
+    if (url.includes('amazon') || url.includes('media-amazon')) {
+      return url.replace(/\._[A-zA-Z0-9_,-]+_\./, '.');
+    }
+    return url;
+  };
+
   return (
     <motion.article 
       initial={{ opacity: 0, y: 30 }}
@@ -16,19 +24,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
       transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
       className="group flex flex-col"
     >
-      <a href={product.affiliateUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-[4/5] sm:aspect-[4/4] overflow-hidden bg-white rounded-lg p-8 sm:p-12 block mb-4 border border-zinc-100">
+      <a href={product.affiliateUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-square overflow-hidden bg-white rounded-2xl p-6 sm:p-8 block mb-4 border border-zinc-100 shadow-sm hover:shadow-md transition-shadow">
         {product.isTrending && (
-          <div className="absolute top-3 left-3 z-10 bg-white text-zinc-900 text-xs font-medium px-3 py-1.5 rounded-full tracking-wide shadow-sm border border-zinc-100">
+          <div className="absolute top-4 left-4 z-10 bg-white text-zinc-900 text-xs font-bold px-3 py-1.5 rounded-full tracking-wide shadow-sm border border-zinc-100">
             Bestseller
           </div>
         )}
         <img 
-          src={product.imageUrl} 
+          src={getHighResImageUrl(product.imageUrl)} 
           alt={product.title}
           loading="lazy"
           className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out mix-blend-multiply"
         />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/[0.02] transition-colors duration-300" />
       </a>
 
       <div className="flex flex-col flex-grow text-center px-2">

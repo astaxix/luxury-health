@@ -4,6 +4,8 @@ import { LegalModal } from './LegalModal';
 
 export function Footer() {
   const [activeModal, setActiveModal] = useState<'impressum' | 'datenschutz' | null>(null);
+  const [showTikTokLinks, setShowTikTokLinks] = useState(false);
+  const [showPartner, setShowPartner] = useState(false);
 
   const impressumContent = (
     <div>
@@ -18,6 +20,21 @@ export function Footer() {
         Telefon: 015237210664<br />
         E-Mail: robin.mikel18@web.de
       </p>
+      <div className="mt-6 pt-6 border-t border-zinc-100">
+        <button 
+          onClick={() => setShowPartner(!showPartner)}
+          className="w-full flex items-center justify-between py-2 text-sm font-semibold text-zinc-700 hover:text-zinc-900 border border-zinc-200 rounded-lg px-4 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:outline-none focus:ring-1 focus:ring-zinc-400"
+        >
+          <span>Geschäftspartner</span>
+          <span className="text-xs text-zinc-400">{showPartner ? '▲ Schließen' : '▼ Anzeigen'}</span>
+        </button>
+        {showPartner && (
+          <div className="mt-3 p-4 bg-zinc-50 rounded-lg border border-zinc-100 text-sm text-zinc-800 animate-fadeIn">
+            <p className="font-semibold text-zinc-900">Dennis Wink</p>
+            <p className="text-zinc-600 mt-1">TikTok: <a href="https://www.tiktok.com/@denoistanders" target="_blank" rel="noopener noreferrer" className="text-[#df9f77] hover:underline">@denoistanders</a></p>
+          </div>
+        )}
+      </div>
     </div>
   );
 
@@ -71,11 +88,39 @@ export function Footer() {
             </div>
             <div>
               <h4 className="text-white font-medium mb-4">Socials</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">TikTok</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pinterest</a></li>
-              </ul>
+              <div className="space-y-2 text-sm">
+                <button 
+                  onClick={() => setShowTikTokLinks(!showTikTokLinks)}
+                  className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors font-medium focus:outline-none"
+                >
+                  <span>TikTok</span>
+                  <span className="text-[10px] text-zinc-500">{showTikTokLinks ? '▲' : '▼'}</span>
+                </button>
+                {showTikTokLinks && (
+                  <ul className="pl-4 space-y-2 mt-2 border-l border-zinc-800 animate-fadeIn">
+                    <li>
+                      <a 
+                        href="https://www.tiktok.com/@by.rubinxo" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-zinc-400 hover:text-white transition-colors block py-0.5"
+                      >
+                        @by.rubinxo
+                      </a>
+                    </li>
+                    <li>
+                      <a 
+                        href="https://www.tiktok.com/@denoistanders" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-zinc-400 hover:text-white transition-colors block py-0.5"
+                      >
+                        @denoistanders
+                      </a>
+                    </li>
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
           

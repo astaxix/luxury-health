@@ -6,7 +6,8 @@ export interface Product {
   description: string;
   price: string;
   imageUrl: string;
-  category: Category;
+  category?: Category;
+  categories?: Category[];
   affiliateUrl: string;
   isTrending?: boolean;
 }

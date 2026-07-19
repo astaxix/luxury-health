@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { X } from 'lucide-react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ProductCard } from './components/ProductCard';
@@ -10,6 +11,7 @@ import { LoginModal } from './components/LoginModal';
 import { AdminPanel } from './components/AdminPanel';
 import { Sidebar } from './components/Sidebar';
 import { SearchModal } from './components/SearchModal';
+import { CookieBanner } from './components/CookieBanner';
 import { db } from './lib/firebase';
 import { collection, onSnapshot, doc, setDoc, writeBatch, getDoc } from 'firebase/firestore';
 
@@ -65,7 +67,8 @@ export default function App() {
   }, []);
 
   const filteredProducts = products.filter((product) => {
-    const matchesCategory = activeCategory === 'Alle' || product.category === activeCategory;
+    const productCategories = product.categories?.length ? product.categories : [product.category];
+    const matchesCategory = activeCategory === 'Alle' || productCategories.includes(activeCategory);
     const matchesSearch = product.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           product.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -124,6 +127,20 @@ export default function App() {
                 ))}
               </div>
 
+              {searchQuery && (
+                <div className="flex justify-center mb-8">
+                  <div className="inline-flex items-center gap-2 bg-zinc-100 text-zinc-900 px-4 py-2 rounded-full text-sm font-medium border border-zinc-200">
+                    <span>Suche: {searchQuery}</span>
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="p-1 hover:bg-zinc-200 rounded-full transition-colors text-zinc-500 hover:text-zinc-900"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Product Grid */}
               <motion.div 
                 layout
@@ -178,6 +195,8 @@ export default function App() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
       />
+
+      <CookieBanner />
     </div>
   );
 }

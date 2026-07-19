@@ -3,7 +3,7 @@ import heroBg from '../assets/images/hero_supplements_1784381748990.jpg';
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-zinc-900 text-white h-[85vh] min-h-[600px] flex items-center justify-center -mt-[104px]">
+    <section className="relative overflow-hidden bg-zinc-900 text-white h-[85vh] min-h-[600px] flex items-center justify-center">
       {/* Background Image with Smooth Scale Animation */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <motion.img 
@@ -26,11 +26,8 @@ export function Hero() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative inline-block"
         >
-          <span className="text-xs md:text-sm font-medium tracking-[0.2em] text-[#df9f77] uppercase mb-4 block drop-shadow-md">
-            Premium Quality
-          </span>
           <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-normal tracking-wide mb-6 max-w-5xl leading-tight text-white drop-shadow-2xl">
-            Willkommen bei <br className="hidden md:block"/>Luxury Health
+            Für dich <br className="hidden md:block"/>nur das Beste!
           </h1>
           <div className="absolute -bottom-2 left-[20%] right-[20%] h-[2px] bg-gradient-to-r from-transparent via-[#df9f77] to-transparent opacity-80"></div>
         </motion.div>
@@ -41,7 +38,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="text-base md:text-xl text-zinc-200 max-w-3xl mt-8 font-light drop-shadow-md leading-relaxed"
         >
-          Entdecke hochwertige Supplements, Vitamine, Fitness-Produkte und Gym-Essentials – alles für deine Gesundheit, Leistung und Fitness an einem Ort.
+          Entdecke hochwertige Supplements, Vitamine und weitere Fitness-Produkte. Top Empfehlungen zu Amazon Artikeln für deine Gesundheit, Leistung und Fitness an einem Ort.
         </motion.p>
         
         <motion.div

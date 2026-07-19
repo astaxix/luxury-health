@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Product, Category } from '../types';
 import { motion } from 'motion/react';
-import { Plus, Trash2, LogOut, RefreshCw, Pencil } from 'lucide-react';
+import { Plus, Trash2, LogOut, RefreshCw, Pencil, ArrowUp, ArrowDown } from 'lucide-react';
 import { db } from '../lib/firebase';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 
@@ -23,6 +23,7 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
     price: '',
     imageUrl: '',
     category: categories[1] || '',
+    categories: [categories[1] || ''],
     affiliateUrl: '',
     isTrending: false,
   });
@@ -47,6 +48,21 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
       const newCats = categories.filter(c => c !== cat);
       await setDoc(doc(db, 'settings', 'categories'), { list: newCats });
     }
+  };
+
+  const handleMoveCategory = async (cat: string, direction: 'up' | 'down') => {
+    const index = categories.indexOf(cat);
+    if (index === -1 || cat === 'Alle') return;
+
+    if (direction === 'up' && index <= 1) return;
+    if (direction === 'down' && index === categories.length - 1) return;
+
+    const newCats = [...categories];
+    const swapIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    [newCats[index], newCats[swapIndex]] = [newCats[swapIndex], newCats[index]];
+
+    await setDoc(doc(db, 'settings', 'categories'), { list: newCats });
   };
 
   const handleExtract = async () => {
@@ -90,6 +106,7 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
       price: product.price,
       imageUrl: product.imageUrl,
       category: product.category,
+      categories: product.categories?.length ? product.categories : (product.category ? [product.category] : []),
       affiliateUrl: product.affiliateUrl,
       isTrending: product.isTrending,
     });
@@ -99,13 +116,18 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.category || !formData.affiliateUrl) {
-      showMessage('error', 'Bitte fülle die Pflichtfelder (Titel, Kategorie, Link) aus.');
+    const productCategories = formData.categories || [];
+    if (!formData.title || productCategories.length === 0 || !formData.affiliateUrl) {
+      showMessage('error', 'Bitte fülle die Pflichtfelder (Titel, mindestens eine Kategorie, Link) aus.');
       return;
     }
 
     if (editingId) {
-      const updatedProduct = { ...formData as Product, id: editingId };
+      const updatedProduct = { 
+        ...formData, 
+        id: editingId,
+        category: productCategories[0], // Keep for backward compatibility
+      } as Product;
       await setDoc(doc(db, 'products', editingId), updatedProduct);
       showMessage('success', 'Produkt erfolgreich aktualisiert!');
     } else {
@@ -116,7 +138,8 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
         description: formData.description || '',
         price: formData.price || 'ab 19,99 €',
         imageUrl: formData.imageUrl || 'https://images.unsplash.com/photo-1599643478514-4a4e09b52342?auto=format&fit=crop&q=80&w=800',
-        category: formData.category,
+        category: productCategories[0],
+        categories: productCategories,
         affiliateUrl: formData.affiliateUrl,
         isTrending: formData.isTrending,
       };
@@ -132,6 +155,7 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
       price: '',
       imageUrl: '',
       category: categories[1] || '',
+      categories: [categories[1] || ''],
       affiliateUrl: '',
       isTrending: false,
     });
@@ -142,7 +166,7 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
     await deleteDoc(doc(db, 'products', id));
     if (editingId === id) {
       setEditingId(null);
-      setFormData({ title: '', description: '', price: '', imageUrl: '', category: categories[1] || '', affiliateUrl: '', isTrending: false });
+      setFormData({ title: '', description: '', price: '', imageUrl: '', category: categories[1] || '', categories: [categories[1] || ''], affiliateUrl: '', isTrending: false });
     }
   };
 
@@ -179,7 +203,7 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
                 <button 
                   onClick={() => {
                     setEditingId(null);
-                    setFormData({ title: '', description: '', price: '', imageUrl: '', category: categories[1] || '', affiliateUrl: '', isTrending: false });
+                    setFormData({ title: '', description: '', price: '', imageUrl: '', category: categories[1] || '', categories: [categories[1] || ''], affiliateUrl: '', isTrending: false });
                     setUrlInput('');
                   }}
                   className="text-sm text-zinc-500 hover:text-zinc-900"
@@ -251,17 +275,27 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-1">Kategorie</label>
-                <select 
-                  value={formData.category} 
-                  onChange={e => setFormData({...formData, category: e.target.value})}
-                  className="w-full px-3 py-2 border border-zinc-300 rounded-lg bg-white"
-                  required
-                >
+                <label className="block text-sm font-medium text-zinc-700 mb-2">Kategorien</label>
+                <div className="flex flex-wrap gap-2">
                   {categories.filter(c => c !== 'Alle').map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <label key={cat} className="flex items-center gap-2 px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg cursor-pointer hover:bg-zinc-100 transition-colors text-sm">
+                      <input 
+                        type="checkbox"
+                        checked={(formData.categories || []).includes(cat)}
+                        onChange={(e) => {
+                          const currentCats = formData.categories || [];
+                          if (e.target.checked) {
+                            setFormData({...formData, categories: [...currentCats, cat]});
+                          } else {
+                            setFormData({...formData, categories: currentCats.filter(c => c !== cat)});
+                          }
+                        }}
+                        className="text-zinc-900 border-zinc-300 rounded focus:ring-zinc-900"
+                      />
+                      <span>{cat}</span>
+                    </label>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div>
@@ -317,15 +351,34 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
             </div>
 
             <ul className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
-              {categories.filter(c => c !== 'Alle').map(cat => (
+              {categories.filter(c => c !== 'Alle').map((cat, idx) => (
                 <li key={cat} className="flex items-center justify-between p-3 bg-zinc-50 rounded-lg border border-zinc-100">
                   <span className="text-sm font-medium">{cat}</span>
-                  <button 
-                    onClick={() => handleDeleteCategory(cat)}
-                    className="text-red-500 hover:text-red-700 p-1"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button 
+                      onClick={() => handleMoveCategory(cat, 'up')}
+                      disabled={idx === 0}
+                      className="text-zinc-400 hover:text-zinc-900 p-1 disabled:opacity-30"
+                      title="Nach oben verschieben"
+                    >
+                      <ArrowUp className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleMoveCategory(cat, 'down')}
+                      disabled={idx === categories.length - 2}
+                      className="text-zinc-400 hover:text-zinc-900 p-1 disabled:opacity-30"
+                      title="Nach unten verschieben"
+                    >
+                      <ArrowDown className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteCategory(cat)}
+                      className="text-red-500 hover:text-red-700 p-1 ml-1"
+                      title="Löschen"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -339,7 +392,7 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
                   <img src={p.imageUrl} alt={p.title} className="w-12 h-12 rounded object-cover" />
                   <div className="flex-grow min-w-0">
                     <p className="text-sm font-medium truncate">{p.title}</p>
-                    <p className="text-xs text-zinc-500">{p.category}</p>
+                    <p className="text-xs text-zinc-500">{(p.categories?.length ? p.categories : [p.category]).filter(Boolean).join(', ')}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     <button 

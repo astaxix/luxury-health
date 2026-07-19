@@ -52,11 +52,20 @@ export function SearchModal({ isOpen, onClose, searchQuery, setSearchQuery }: Se
                 }}
                 className="flex-grow text-xl md:text-2xl font-serif text-zinc-900 bg-transparent border-none focus:outline-none placeholder-zinc-300"
               />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-500 shrink-0"
+                  title="Suche löschen"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              )}
               <button 
                 onClick={onClose}
-                className="p-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-500 shrink-0"
+                className="px-4 py-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-600 text-sm font-medium shrink-0"
               >
-                <X className="w-6 h-6" />
+                Schließen
               </button>
             </div>
           </motion.div>

@@ -171,9 +171,9 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="max-w-6xl mx-auto px-4 pt-32 pb-12 mt-12">
       {message && (
-        <div className={`fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium shadow-lg z-50 transition-all ${
+        <div className={`fixed top-24 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium shadow-lg z-50 transition-all ${
           message.type === 'error' ? 'bg-red-500 text-white' : 'bg-emerald-500 text-white'
         }`}>
           {message.text}
@@ -183,7 +183,7 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
         <h1 className="text-3xl font-serif font-bold text-zinc-900">Admin Panel</h1>
         <button 
           onClick={onLogout}
-          className="flex items-center gap-2 px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 rounded-lg transition-colors text-sm font-medium"
+          className="relative z-50 flex items-center gap-2 px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 rounded-lg transition-colors text-sm font-medium"
         >
           <LogOut className="w-4 h-4" />
           Logout

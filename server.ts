@@ -35,10 +35,17 @@ async function startServer() {
         "Unbekanntes Produkt";
 
       let imageUrl =
+        $("#landingImage").attr("data-old-hires") ||
         $("#landingImage").attr("src") ||
+        $('img[data-old-hires]').attr('data-old-hires') ||
         $('img[data-old-hires]').attr('src') ||
         $('meta[property="og:image"]').attr("content") ||
         "https://images.unsplash.com/photo-1599643478514-4a4e09b52342?auto=format&fit=crop&q=80&w=800";
+
+      // Clean Amazon image URL to get the highest resolution version
+      if (imageUrl && (imageUrl.includes('amazon') || imageUrl.includes('media-amazon'))) {
+          imageUrl = imageUrl.replace(/\._[A-zA-Z0-9_,-]+_\./, '.');
+      }
 
       let price =
         $(".a-price .a-offscreen").first().text().trim() ||

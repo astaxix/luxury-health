@@ -16,9 +16,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
       transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
       className="group flex flex-col"
     >
-      <a href={product.affiliateUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-[4/5] sm:aspect-square overflow-hidden bg-zinc-100 block mb-4">
+      <a href={product.affiliateUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-[4/5] sm:aspect-[4/4] overflow-hidden bg-white rounded-lg p-8 sm:p-12 block mb-4 border border-zinc-100">
         {product.isTrending && (
-          <div className="absolute top-3 left-3 z-10 bg-white/90 text-zinc-900 text-xs font-medium px-3 py-1.5 rounded-full tracking-wide shadow-sm">
+          <div className="absolute top-3 left-3 z-10 bg-white text-zinc-900 text-xs font-medium px-3 py-1.5 rounded-full tracking-wide shadow-sm border border-zinc-100">
             Bestseller
           </div>
         )}
@@ -26,7 +26,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
           src={product.imageUrl} 
           alt={product.title}
           loading="lazy"
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+          className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out mix-blend-multiply"
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
       </a>

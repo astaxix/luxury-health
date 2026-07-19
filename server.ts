@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
+import * as cheerio from "cheerio";
 
 async function startServer() {
   const app = express();
@@ -16,29 +16,50 @@ async function startServer() {
         return res.status(400).json({ error: "URL is required" });
       }
 
-      if (!process.env.GEMINI_API_KEY) {
-        throw new Error("GEMINI_API_KEY is not set");
-      }
-
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Look up this Amazon product URL and provide the title, current price in Euros (e.g. "29,99 €"), a short description (in German, 1-2 sentences), and a good representative image URL of the product. Return ONLY a valid JSON object with keys: title, imageUrl, price, description. URL: ${url}`;
-      
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-        config: {
-          tools: [{ googleSearch: {} }],
-          responseMimeType: "application/json",
-        }
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+          "Accept-Language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
+        },
       });
 
-      const data = JSON.parse(response.text() || "{}");
+      const html = await response.text();
+      const $ = cheerio.load(html);
+
+      // Extract Amazon specific or generic info
+      let title =
+        $("#productTitle").text().trim() ||
+        $('meta[property="og:title"]').attr("content") ||
+        $("title").text() ||
+        "Unbekanntes Produkt";
+
+      let imageUrl =
+        $("#landingImage").attr("src") ||
+        $('img[data-old-hires]').attr('src') ||
+        $('meta[property="og:image"]').attr("content") ||
+        "https://images.unsplash.com/photo-1599643478514-4a4e09b52342?auto=format&fit=crop&q=80&w=800";
+
+      let price =
+        $(".a-price .a-offscreen").first().text().trim() ||
+        $(".a-price-whole").first().text().trim() + "," + $(".a-price-fraction").first().text().trim() + " €" ||
+        "";
+        
+      if (price === " €" || !price) {
+          price = "ab 19,99 €";
+      }
+
+      let description =
+        $("#feature-bullets ul li span").first().text().trim() ||
+        $('meta[name="description"]').attr("content") ||
+        $('meta[property="og:description"]').attr("content") ||
+        "Hochwertiges Schmuckstück.";
 
       res.json({
-        title: data.title || "Unbekanntes Produkt",
-        imageUrl: data.imageUrl || "https://images.unsplash.com/photo-1599643478514-4a4e09b52342?auto=format&fit=crop&q=80&w=800",
-        price: data.price || "ab 19,99 €",
-        description: data.description || "Hochwertiges Produkt.",
+        title,
+        imageUrl,
+        price,
+        description,
       });
     } catch (error) {
       console.error("Extraction error:", error);

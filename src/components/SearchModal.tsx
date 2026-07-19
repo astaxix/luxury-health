@@ -50,7 +50,7 @@ export function SearchModal({ isOpen, onClose, searchQuery, setSearchQuery }: Se
                     if (shop) shop.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="flex-grow text-xl md:text-2xl font-serif text-zinc-900 bg-transparent border-none focus:outline-none placeholder-zinc-300"
+                className="flex-grow min-w-0 text-xl md:text-2xl font-serif text-zinc-900 bg-transparent border-none focus:outline-none placeholder-zinc-300"
               />
               {searchQuery && (
                 <button 
@@ -63,7 +63,7 @@ export function SearchModal({ isOpen, onClose, searchQuery, setSearchQuery }: Se
               )}
               <button 
                 onClick={onClose}
-                className="px-4 py-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-600 text-sm font-medium shrink-0"
+                className="px-3 py-2 sm:px-4 sm:py-2 hover:bg-zinc-100 rounded-full transition-colors text-zinc-600 text-xs sm:text-sm font-medium shrink-0"
               >
                 Schließen
               </button>

@@ -316,7 +316,7 @@ export function LoginModal({ isOpen, onClose, onLogin }: LoginModalProps) {
                         value={loginIdentifier}
                         onChange={(e) => setLoginIdentifier(e.target.value)}
                         className="w-full pl-11 pr-4 py-2.5 bg-zinc-950/80 border border-zinc-800 rounded-xl text-zinc-100 placeholder-zinc-700 focus:outline-none focus:border-[#df9f77]/50 focus:ring-1 focus:ring-[#df9f77]/10 text-sm transition-all duration-300"
-                        placeholder="E-Mail oder z.B. admin"
+                        placeholder="E-Mail oder Benutzername"
                         autoFocus
                       />
                     </div>

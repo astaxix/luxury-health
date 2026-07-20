@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import heroBg from '../assets/images/hero_supplements_1784381748990.jpg';
+import heroBg from '../assets/images/luxury_health_hero_silver_gold_bright_bottom_1784551611178.jpg';
 
 export function Hero() {
   return (
@@ -26,17 +26,17 @@ export function Hero() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative inline-block"
         >
-          <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-normal tracking-wide mb-6 max-w-5xl leading-tight text-white drop-shadow-2xl">
+          <h1 className="font-serif text-4xl md:text-7xl lg:text-8xl font-normal tracking-wide mb-6 md:mb-8 lg:mb-10 max-w-5xl leading-tight text-white drop-shadow-2xl">
             Für dich <br className="hidden md:block"/>nur das Beste!
           </h1>
-          <div className="absolute -bottom-2 left-[20%] right-[20%] h-[2px] bg-gradient-to-r from-transparent via-[#df9f77] to-transparent opacity-80"></div>
+          <div className="absolute -bottom-2 md:-bottom-4 left-[20%] right-[20%] h-[2px] md:h-[3px] bg-gradient-to-r from-transparent via-[#df9f77] to-transparent opacity-80"></div>
         </motion.div>
 
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="text-base md:text-xl text-zinc-200 max-w-3xl mt-8 font-light drop-shadow-md leading-relaxed"
+          className="text-base md:text-2xl lg:text-3xl text-zinc-200 max-w-3xl mt-8 md:mt-12 font-light drop-shadow-md leading-relaxed"
         >
           Entdecke hochwertige Supplements, Vitamine und weitere Fitness-Produkte. Top Empfehlungen zu Amazon Artikeln für deine Gesundheit, Leistung und Fitness an einem Ort.
         </motion.p>
@@ -45,11 +45,11 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-          className="mt-12"
+          className="mt-12 md:mt-16"
         >
           <button 
             onClick={() => document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-[#df9f77] hover:bg-[#c98962] text-white px-10 py-4 rounded-full text-sm font-medium tracking-wider transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 active:translate-y-0"
+            className="bg-[#df9f77] hover:bg-[#c98962] text-white px-10 py-4 md:px-14 md:py-5 rounded-full text-sm md:text-lg lg:text-xl font-medium tracking-wider transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 active:translate-y-0"
           >
             PRODUKTE ENTDECKEN
           </button>

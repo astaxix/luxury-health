@@ -14,10 +14,12 @@ import { SearchModal } from './components/SearchModal';
 import { CookieBanner } from './components/CookieBanner';
 import { db } from './lib/firebase';
 import { collection, onSnapshot, doc, setDoc, writeBatch, getDoc } from 'firebase/firestore';
+import { Loader } from './components/Loader';
 
 const INITIAL_CATEGORIES: Category[] = ['Alle', 'Proteinpulver', 'Vitamine', 'Snacks', 'Equipment'];
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<Category>('Alle');
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -29,6 +31,13 @@ export default function App() {
   // Load from Firestore
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const unsubProducts = onSnapshot(collection(db, 'products'), async (snapshot) => {
@@ -86,7 +95,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-300">
       <Header 
         onLoginClick={() => setIsLoginOpen(true)}
         isAdmin={isAdmin}
@@ -101,25 +110,25 @@ export default function App() {
             <Hero />
 
             <section id="shop" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-              <div className="flex flex-col items-center mb-12">
-                <h2 className="font-serif text-3xl md:text-4xl font-normal text-zinc-900 mb-4 text-center tracking-tight">
+              <div className="flex flex-col items-center mb-12 md:mb-16">
+                <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl font-normal text-zinc-100 mb-4 text-center tracking-tight">
                   Vorgestellte Produkte
                 </h2>
-                <p className="text-zinc-500 text-center max-w-2xl hidden">
+                <p className="text-zinc-400 text-center max-w-2xl hidden">
                   Shop die Looks deiner Lieblings-Creator. Alle Produkte sind handverlesen und direkt auf Amazon verfügbar.
                 </p>
               </div>
 
               {/* Category Filter */}
-              <div className="flex overflow-x-auto pb-4 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 hide-scrollbar gap-3 justify-start sm:justify-center">
+              <div className="flex overflow-x-auto pb-4 mb-8 md:mb-12 -mx-4 px-4 sm:mx-0 sm:px-0 hide-scrollbar gap-3 justify-start sm:justify-center">
                 {categories.map((category) => (
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    className={`whitespace-nowrap px-6 py-2.5 md:px-8 md:py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 ${
                       activeCategory === category
-                        ? 'bg-zinc-900 text-white shadow-md'
-                        : 'bg-white text-zinc-600 hover:bg-zinc-100 border border-zinc-200'
+                        ? 'bg-amber-500 text-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                        : 'bg-zinc-900/50 text-zinc-400 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700'
                     }`}
                   >
                     {category}
@@ -129,11 +138,11 @@ export default function App() {
 
               {searchQuery && (
                 <div className="flex justify-center mb-8">
-                  <div className="inline-flex items-center gap-2 bg-zinc-100 text-zinc-900 px-4 py-2 rounded-full text-sm font-medium border border-zinc-200">
+                  <div className="inline-flex items-center gap-2 bg-zinc-900/80 text-zinc-100 px-4 py-2 rounded-full text-sm font-medium border border-zinc-800">
                     <span>Suche: {searchQuery}</span>
                     <button 
                       onClick={() => setSearchQuery('')}
-                      className="p-1 hover:bg-zinc-200 rounded-full transition-colors text-zinc-500 hover:text-zinc-900"
+                      className="p-1 hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-white"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -155,7 +164,7 @@ export default function App() {
 
               {filteredProducts.length === 0 && (
                 <div className="text-center py-20">
-                  <p className="text-zinc-500">
+                  <p className="text-zinc-400">
                     {searchQuery ? `Keine Produkte für "${searchQuery}" gefunden.` : 'Keine Produkte in dieser Kategorie gefunden.'}
                   </p>
                 </div>
@@ -197,6 +206,10 @@ export default function App() {
       />
 
       <CookieBanner />
+
+      <AnimatePresence>
+        {isLoading && <Loader />}
+      </AnimatePresence>
     </div>
   );
 }

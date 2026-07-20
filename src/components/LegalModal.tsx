@@ -18,24 +18,24 @@ export function LegalModal({ isOpen, onClose, title, content }: LegalModalProps)
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-white rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl"
+          className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl"
         >
-          <div className="flex items-center justify-between p-6 border-b border-zinc-100">
-            <h2 className="text-2xl font-serif text-zinc-900">{title}</h2>
+          <div className="flex items-center justify-between p-6 border-b border-zinc-800">
+            <h2 className="text-2xl font-serif text-zinc-100">{title}</h2>
             <button
               onClick={onClose}
-              className="p-2 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 rounded-full transition-colors"
+              className="p-2 text-zinc-400 hover:text-amber-500 hover:bg-zinc-800 rounded-full transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
-          <div className="p-6 overflow-y-auto prose prose-sm prose-zinc max-w-none text-zinc-600">
+          <div className="p-6 overflow-y-auto prose prose-sm prose-invert max-w-none text-zinc-400">
             {content}
           </div>
         </motion.div>

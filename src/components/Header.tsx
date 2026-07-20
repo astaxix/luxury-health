@@ -1,6 +1,7 @@
 import { UserCircle, Menu, Search } from 'lucide-react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
 import { useState } from 'react';
+import { Logo } from './Logo';
 
 interface HeaderProps {
   onLoginClick: () => void;
@@ -40,7 +41,7 @@ export function Header({ onLoginClick, isAdmin, onAdminClick, onMenuClick, onSea
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 w-full transition-colors duration-200 ${
-        isScrolled ? "bg-zinc-900/95 backdrop-blur-md shadow-md" : "bg-zinc-900 shadow-md"
+        isScrolled ? "bg-zinc-950/95 backdrop-blur-md shadow-md border-b border-zinc-900" : "bg-zinc-950/50 backdrop-blur-sm"
       }`}
     >
       {/* Main Header */}
@@ -49,36 +50,37 @@ export function Header({ onLoginClick, isAdmin, onAdminClick, onMenuClick, onSea
           <div className="flex items-center justify-between h-14">
             
             <div className="flex items-center gap-4">
-              <button onClick={onMenuClick} className="p-2 text-white hover:opacity-75 transition-opacity">
-                <Menu className="w-6 h-6" />
+              <button onClick={onMenuClick} className="p-2 md:p-3 text-zinc-100 hover:text-amber-500 transition-colors">
+                <Menu className="w-6 h-6 md:w-7 md:h-7" />
               </button>
             </div>
 
             <div className="flex-1 flex justify-center">
-              <a href="#" className="font-serif text-2xl font-semibold tracking-wide text-white">
-                Luxury Health
+              <a href="#" className="flex items-center gap-2.5 md:gap-4 font-serif text-2xl md:text-3xl font-semibold tracking-wide text-zinc-100 group">
+                <Logo className="w-9 h-9 md:w-12 md:h-12" />
+                <span>Luxury Health</span>
               </a>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button onClick={onSearchClick} className="p-2 text-white hover:opacity-75 transition-opacity" title="Suchen">
-                <Search className="w-5 h-5" />
+            <div className="flex items-center gap-2 md:gap-4">
+              <button onClick={onSearchClick} className="p-2 md:p-3 text-zinc-100 hover:text-amber-500 transition-colors" title="Suchen">
+                <Search className="w-5 h-5 md:w-6 md:h-6" />
               </button>
               {isAdmin ? (
                 <button 
                   onClick={onAdminClick}
-                  className="flex items-center gap-2 text-sm font-medium text-white hover:opacity-75 transition-colors"
+                  className="flex items-center gap-2 text-sm md:text-base font-medium text-zinc-100 hover:text-amber-500 transition-colors"
                 >
-                  <UserCircle className="w-6 h-6" />
+                  <UserCircle className="w-6 h-6 md:w-7 md:h-7" />
                   <span className="hidden sm:inline">Admin</span>
                 </button>
               ) : (
                 <button 
                   onClick={onLoginClick}
-                  className="p-2 text-white hover:opacity-75 transition-colors"
+                  className="p-2 md:p-3 text-zinc-100 hover:text-amber-500 transition-colors"
                   title="Admin Login"
                 >
-                  <UserCircle className="w-6 h-6" />
+                  <UserCircle className="w-6 h-6 md:w-7 md:h-7" />
                 </button>
               )}
             </div>

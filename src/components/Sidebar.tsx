@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search } from 'lucide-react';
 import { Category } from '../types';
+import { Logo } from './Logo';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -41,7 +42,10 @@ export function Sidebar({
             className="fixed top-0 left-0 bottom-0 w-80 bg-zinc-950 border-r border-zinc-900 z-[70] shadow-2xl flex flex-col"
           >
             <div className="p-6 border-b border-zinc-900 flex items-center justify-between">
-              <span className="font-serif text-xl font-semibold text-zinc-100">Menü</span>
+              <div className="flex items-center gap-2.5 font-serif text-lg font-semibold text-zinc-100">
+                <Logo className="w-8 h-8" />
+                <span>Luxury Health</span>
+              </div>
               <button 
                 onClick={onClose}
                 className="p-2 hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-amber-500"

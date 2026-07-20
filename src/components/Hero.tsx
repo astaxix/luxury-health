@@ -12,7 +12,7 @@ export function Hero() {
           transition={{ duration: 1.5, ease: "easeOut" }}
           src={heroBg} 
           alt="Premium Supplements, Vitamine und Fitness-Produkte von Luxury Health" 
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-[90%_center] sm:object-center"
         />
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent" />

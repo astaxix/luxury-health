@@ -18,10 +18,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) 
 
   return (
     <motion.article 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+      layout
+      initial={{ opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ 
+        opacity: { duration: 0.3, ease: "linear" },
+        layout: { duration: 0.45, ease: [0.16, 1, 0.3, 1] },
+        scale: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
+      }}
       className="group flex flex-col bg-zinc-900/40 rounded-3xl p-4 border border-zinc-800 hover:border-zinc-700 transition-colors"
     >
       <a href={product.affiliateUrl} target="_blank" rel="noopener noreferrer" className="relative aspect-square overflow-hidden bg-zinc-100 rounded-2xl p-6 sm:p-8 block mb-6 shadow-inner">

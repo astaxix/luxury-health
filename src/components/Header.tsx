@@ -1,4 +1,4 @@
-import { UserCircle, Menu, Search } from 'lucide-react';
+import { UserCircle, Menu, Search, LogOut } from 'lucide-react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
 import { useState } from 'react';
 import { Logo } from './Logo';
@@ -9,9 +9,21 @@ interface HeaderProps {
   onAdminClick: () => void;
   onMenuClick: () => void;
   onSearchClick: () => void;
+  user: any;
+  userProfile: any;
+  onLogout: () => void;
 }
 
-export function Header({ onLoginClick, isAdmin, onAdminClick, onMenuClick, onSearchClick }: HeaderProps) {
+export function Header({ 
+  onLoginClick, 
+  isAdmin, 
+  onAdminClick, 
+  onMenuClick, 
+  onSearchClick,
+  user,
+  userProfile,
+  onLogout
+}: HeaderProps) {
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,19 +78,33 @@ export function Header({ onLoginClick, isAdmin, onAdminClick, onMenuClick, onSea
               <button onClick={onSearchClick} className="p-2 md:p-3 text-zinc-100 hover:text-amber-500 transition-colors" title="Suchen">
                 <Search className="w-5 h-5 md:w-6 md:h-6" />
               </button>
-              {isAdmin ? (
-                <button 
-                  onClick={onAdminClick}
-                  className="flex items-center gap-2 text-sm md:text-base font-medium text-zinc-100 hover:text-amber-500 transition-colors"
-                >
-                  <UserCircle className="w-6 h-6 md:w-7 md:h-7" />
-                  <span className="hidden sm:inline">Admin</span>
-                </button>
+              {user ? (
+                <div className="flex items-center gap-2">
+                  {isAdmin && (
+                    <button 
+                      onClick={onAdminClick}
+                      className="flex items-center gap-1.5 text-xs sm:text-sm font-medium bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-full text-zinc-100 hover:text-amber-500 hover:border-amber-500/50 transition-colors"
+                    >
+                      Admin
+                    </button>
+                  )}
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/80 border border-zinc-800 text-xs sm:text-sm text-zinc-300">
+                    <UserCircle className="w-4.5 h-4.5 text-amber-500 shrink-0" />
+                    <span className="max-w-[80px] sm:max-w-[120px] truncate font-medium">{userProfile?.username || user.displayName || 'User'}</span>
+                  </div>
+                  <button 
+                    onClick={onLogout}
+                    className="p-1.5 text-zinc-400 hover:text-red-400 hover:bg-zinc-900 rounded-full transition-colors shrink-0"
+                    title="Abmelden"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
               ) : (
                 <button 
                   onClick={onLoginClick}
                   className="p-2 md:p-3 text-zinc-100 hover:text-amber-500 transition-colors"
-                  title="Admin Login"
+                  title="Login / Registrieren"
                 >
                   <UserCircle className="w-6 h-6 md:w-7 md:h-7" />
                 </button>

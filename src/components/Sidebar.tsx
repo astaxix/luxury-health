@@ -62,6 +62,13 @@ export function Sidebar({
                   placeholder="Suchen..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      onClose();
+                      const shop = document.getElementById('shop');
+                      if (shop) shop.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                   className="w-full pl-10 pr-10 py-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-zinc-100 placeholder-zinc-500"
                 />
                 {searchQuery && (

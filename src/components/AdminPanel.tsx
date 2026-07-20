@@ -9,9 +9,10 @@ interface AdminPanelProps {
   onLogout: () => void;
   products: Product[];
   categories: Category[];
+  onBackToShop?: () => void;
 }
 
-export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) {
+export function AdminPanel({ onLogout, products, categories, onBackToShop }: AdminPanelProps) {
   const [newCategory, setNewCategory] = useState('');
   const [urlInput, setUrlInput] = useState('');
   const [isExtracting, setIsExtracting] = useState(false);
@@ -180,14 +181,26 @@ export function AdminPanel({ onLogout, products, categories }: AdminPanelProps) 
         </div>
       )}
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-serif font-bold text-zinc-900">Admin Panel</h1>
-        <button 
-          onClick={onLogout}
-          className="relative z-50 flex items-center gap-2 px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 rounded-lg transition-colors text-sm font-medium"
-        >
-          <LogOut className="w-4 h-4" />
-          Logout
-        </button>
+        <h1 className="text-3xl font-serif font-bold text-zinc-100">Admin Panel</h1>
+        <div className="flex items-center gap-3">
+          {onBackToShop && (
+            <button 
+              type="button"
+              onClick={onBackToShop}
+              className="relative z-50 flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 rounded-lg transition-colors text-sm font-semibold shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+            >
+              Zurück zum Shop
+            </button>
+          )}
+          <button 
+            type="button"
+            onClick={onLogout}
+            className="relative z-50 flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 rounded-lg transition-colors text-sm font-medium"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

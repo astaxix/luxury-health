@@ -12,8 +12,9 @@ import { AdminPanel } from './components/AdminPanel';
 import { Sidebar } from './components/Sidebar';
 import { SearchModal } from './components/SearchModal';
 import { CookieBanner } from './components/CookieBanner';
-import { db } from './lib/firebase';
+import { db, auth } from './lib/firebase';
 import { collection, onSnapshot, doc, setDoc, writeBatch, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { Loader } from './components/Loader';
 
 const INITIAL_CATEGORIES: Category[] = ['Alle', 'Proteinpulver', 'Vitamine', 'Snacks', 'Equipment'];
@@ -32,11 +33,47 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
 
+  const [user, setUser] = useState<any>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1200);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const unsubAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        try {
+          const userDocSnap = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (userDocSnap.exists()) {
+            const data = userDocSnap.data();
+            setUserProfile(data);
+            const isUserAdmin = data.role === 'admin' || firebaseUser.email?.toLowerCase() === 'info@as-mietwagen-service.de';
+            setIsAdmin(isUserAdmin);
+          } else {
+            setUserProfile({
+              email: firebaseUser.email,
+              username: firebaseUser.displayName || 'Nutzer',
+              fullName: firebaseUser.displayName || 'Vollständiger Name'
+            });
+            setIsAdmin(firebaseUser.email?.toLowerCase() === 'info@as-mietwagen-service.de');
+          }
+        } catch (err) {
+          console.error("Fehler beim Laden des Benutzerprofils:", err);
+        }
+      } else {
+        setUser(null);
+        setUserProfile(null);
+        setIsAdmin(false);
+        setCurrentView('shop');
+      }
+    });
+
+    return () => unsubAuth();
   }, []);
 
   useEffect(() => {
@@ -84,14 +121,15 @@ export default function App() {
   });
 
   const handleLogin = () => {
-    setIsAdmin(true);
     setIsLoginOpen(false);
-    setCurrentView('admin');
   };
 
-  const handleLogout = () => {
-    setIsAdmin(false);
-    setCurrentView('shop');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error("Fehler beim Abmelden:", err);
+    }
   };
 
   return (
@@ -102,6 +140,9 @@ export default function App() {
         onAdminClick={() => setCurrentView('admin')}
         onMenuClick={() => setIsMenuOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
+        user={user}
+        userProfile={userProfile}
+        onLogout={handleLogout}
       />
       
       <main className="flex-grow">
@@ -176,6 +217,7 @@ export default function App() {
             onLogout={handleLogout}
             products={products}
             categories={categories}
+            onBackToShop={() => setCurrentView('shop')}
           />
         )}
       </main>
